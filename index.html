@@ -117,6 +117,20 @@
             </div>
         </div>
 
+        <!-- Confirmation Modal -->
+        <div id="confirm-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center modal-backdrop">
+            <div class="bg-gray-800 rounded-lg shadow-2xl w-full max-w-sm m-4">
+                <div class="p-4">
+                    <h3 id="confirm-modal-title" class="text-lg font-semibold">Are you sure?</h3>
+                    <p id="confirm-modal-text" class="text-gray-400 mt-2">This action cannot be undone.</p>
+                </div>
+                <div class="p-4 flex justify-end gap-2 bg-gray-900 rounded-b-lg">
+                    <button id="confirm-cancel-btn" class="px-4 py-2 bg-gray-600 hover:bg-gray-500 rounded-md font-semibold">Cancel</button>
+                    <button id="confirm-action-btn" class="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-md font-semibold">Delete</button>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <script type="module">
@@ -130,7 +144,7 @@
             apiKey: "AIzaSyCjO0Z-aMLpH1b4sQ_bT3A_8m9DDeKlk7E",
             authDomain: "alina-a53ab.firebaseapp.com",
             projectId: "alina-a53ab",
-            storageBucket: "alina-a53ab.firebasestorage.app",
+            storageBucket: "alina-a53ab.appspot.com",
             messagingSenderId: "543963335916",
             appId: "1:543963335916:web:60a500d3aa43baaca5e9c9",
             measurementId: "G-DBSHERXPJ3"
@@ -139,11 +153,11 @@
         // --- Character & User Config ---
         // IMPORTANT: Change these passwords!
         const characters = {
-            'ranger': { name: 'Green Ranger', password: 'a', isAdmin: false, image: 'https://placehold.co/128x128/10B981/FFFFFF?text=Ranger' },
-            'berserker': { name: 'Brown Berserker', password: 'a', isAdmin: false, image: 'https://placehold.co/128x128/D97706/FFFFFF?text=Berserker' },
-            'mage': { name: 'Purple Mage', password: 'a', isAdmin: false, image: 'https://placehold.co/128x128/9333EA/FFFFFF?text=Mage' },
-            'rogue': { name: 'Blue Rogue', password: 'a', isAdmin: false, image: 'https://placehold.co/128x128/3B82F6/FFFFFF?text=Rogue' },
-            'admin': { name: 'Dungeon Master', password: 'admin', isAdmin: true, image: 'https://placehold.co/128x128/4b5563/FFFFFF?text=Admin' },
+            'ranger': { name: 'Green Ranger', password: 'a', isAdmin: false, image: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%2310B981'/%3E%3Ctext x='50' y='55' font-family='Arial' font-size='20' fill='white' text-anchor='middle'%3ERanger%3C/text%3E%3C/svg%3E` },
+            'berserker': { name: 'Brown Berserker', password: 'a', isAdmin: false, image: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%23D97706'/%3E%3Ctext x='50' y='55' font-family='Arial' font-size='16' fill='white' text-anchor='middle'%3EBerserker%3C/text%3E%3C/svg%3E` },
+            'mage': { name: 'Purple Mage', password: 'a', isAdmin: false, image: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%239333EA'/%3E%3Ctext x='50' y='55' font-family='Arial' font-size='24' fill='white' text-anchor='middle'%3EMage%3C/text%3E%3C/svg%3E` },
+            'rogue': { name: 'Blue Rogue', password: 'a', isAdmin: false, image: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%233B82F6'/%3E%3Ctext x='50' y='55' font-family='Arial' font-size='24' fill='white' text-anchor='middle'%3ERogue%3C/text%3E%3C/svg%3E` },
+            'admin': { name: 'Dungeon Master', password: 'admin', isAdmin: true, image: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%234b5563'/%3E%3Ctext x='50' y='55' font-family='Arial' font-size='24' fill='white' text-anchor='middle'%3EAdmin%3C/text%3E%3C/svg%3E` },
         };
 
         const appId = firebaseConfig.projectId || 'dnd-feed-app-public';
@@ -153,6 +167,7 @@
         let currentUser = null;
         let pastedImageData = null;
         let selectedCharacterId = null;
+        let postToDeleteId = null;
 
         // --- UI Elements ---
         const loginScreen = document.getElementById('login-screen');
@@ -180,6 +195,11 @@
         const passwordError = document.getElementById('password-error');
         const cancelLoginBtn = document.getElementById('cancel-login-btn');
         const submitLoginBtn = document.getElementById('submit-login-btn');
+
+        const confirmModal = document.getElementById('confirm-modal');
+        const confirmModalText = document.getElementById('confirm-modal-text');
+        const confirmCancelBtn = document.getElementById('confirm-cancel-btn');
+        const confirmActionBtn = document.getElementById('confirm-action-btn');
 
 
         // --- Helper Functions ---
@@ -227,7 +247,7 @@
 
                 postElement.innerHTML = `
                     <div class="flex items-start">
-                        <img src="${character?.image || 'https://placehold.co/40x40'}" class="w-10 h-10 rounded-full mr-3 shrink-0 object-cover">
+                        <img src="${character?.image || 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Ccircle cx=\'50\' cy=\'50\' r=\'50\' fill=\'gray\'/%3E%3C/svg%3E'}" class="w-10 h-10 rounded-full mr-3 shrink-0 object-cover">
                         <div class="flex-1">
                             <div class="flex justify-between items-center">
                                 <div>
@@ -268,6 +288,12 @@
         };
 
         const handleLogin = async () => {
+             if (!auth.currentUser) {
+                console.error("Login attempt failed: User not authenticated.");
+                passwordError.textContent = "Authentication failed. Please refresh.";
+                passwordError.classList.remove('hidden');
+                return;
+             }
              const enteredPassword = passwordInput.value;
              const character = characters[selectedCharacterId];
 
@@ -284,6 +310,7 @@
                 setupUIForUser(userProfile);
                 passwordModal.classList.add('hidden');
              } else {
+                passwordError.textContent = "Incorrect password.";
                 passwordError.classList.remove('hidden');
              }
         }
@@ -340,10 +367,25 @@
 
             if (deleteButton && currentUser && currentUser.isAdmin) {
                 const postId = deleteButton.dataset.id;
-                if (postId && confirm('Are you sure you want to delete this post?')) {
-                    const postDocRef = doc(db, `artifacts/${appId}/public/data/posts`, postId);
-                    await deleteDoc(postDocRef);
+                if (postId) {
+                    postToDeleteId = postId;
+                    confirmModalText.textContent = "This post will be permanently deleted.";
+                    confirmModal.classList.remove('hidden');
                 }
+            }
+        });
+        
+        confirmCancelBtn.addEventListener('click', () => {
+            postToDeleteId = null;
+            confirmModal.classList.add('hidden');
+        });
+
+        confirmActionBtn.addEventListener('click', async () => {
+            if (postToDeleteId) {
+                const postDocRef = doc(db, `artifacts/${appId}/public/data/posts`, postToDeleteId);
+                await deleteDoc(postDocRef);
+                postToDeleteId = null;
+                confirmModal.classList.add('hidden');
             }
         });
 
@@ -480,7 +522,11 @@
                     await signInAnonymously(auth);
                 } catch (error) {
                     console.error("Authentication Error: ", error);
-                    authStatus.textContent = 'Could not connect. Please refresh the page.';
+                    let errorMessage = 'Could not connect. Please refresh the page.';
+                    if (error.code === 'auth/admin-restricted-operation') {
+                        errorMessage = 'Connection Error: Anonymous sign-in is not enabled for this project. Please enable it in your Firebase Console under Authentication -> Sign-in method.';
+                    }
+                    authStatus.textContent = errorMessage;
                 }
             })();
         };
