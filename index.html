@@ -58,12 +58,11 @@
 
         <!-- Login Screen -->
         <div id="login-screen" class="flex flex-col items-center justify-center h-full p-8 text-center">
-            <h1 class="text-3xl font-bold mb-4">login</h1>
-            <p class="text-gray-400 mb-12">tap character</p>
-            <div id="character-selection-container" class="grid grid-cols-3 gap-4">
+            <h1 class="text-5xl font-bold mb-8" style="color: #7F3BC3;">yapper</h1>
+            <h2 class="text-3xl font-bold mb-4">login</h2>
+            <div id="character-selection-container" class="grid grid-cols-3 gap-4 mt-8">
                 <!-- Characters will be injected here by JS -->
             </div>
-             <p id="auth-status" class="mt-8 text-sm text-gray-500">connecting...</p>
         </div>
 
         <!-- Main App Screen -->
@@ -94,19 +93,15 @@
 
         <!-- New Post Modal -->
         <div id="new-post-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center modal-backdrop">
-             <div class="bg-gray-800 rounded-lg shadow-2xl w-full max-w-sm m-4">
+             <div class="rounded-lg shadow-2xl w-full max-w-sm m-4" style="background-color: #1a171e;">
                 <div class="p-4 border-b border-gray-700 flex justify-between items-center">
                     <h3 class="text-lg font-semibold">new yap</h3>
                     <p id="replying-to-indicator" class="text-sm text-gray-400 hidden"></p>
                 </div>
                 <div class="p-4">
-                    <div id="pasted-image-preview-container" class="mb-2 hidden">
-                         <img id="pasted-image-preview" class="max-h-40 rounded-lg w-auto mx-auto" src="" />
-                         <button id="remove-image-btn" class="w-full text-sm text-red-500 hover:underline mt-2">remove pic</button>
-                    </div>
-                    <textarea id="post-textarea" class="w-full h-32 bg-gray-700 border border-gray-600 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none" placeholder="what's happening? u can also paste a pic"></textarea>
+                    <textarea id="post-textarea" class="w-full h-32 bg-gray-700 border border-gray-600 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none" placeholder="what's happening?"></textarea>
                 </div>
-                <div class="p-4 flex justify-between items-center gap-2 bg-gray-800 rounded-b-lg">
+                <div class="p-4 flex justify-between items-center gap-2 rounded-b-lg">
                     <div class="flex items-center">
                         <input id="anon-checkbox" type="checkbox" class="h-4 w-4 rounded bg-gray-700 border-gray-600 text-purple-600 focus:ring-purple-500">
                         <label for="anon-checkbox" class="ml-2 text-sm font-medium text-gray-300">make anon</label>
@@ -121,7 +116,7 @@
 
         <!-- Password Modal -->
         <div id="password-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center modal-backdrop">
-            <div class="bg-gray-800 rounded-lg shadow-2xl w-full max-w-sm m-4">
+            <div class="rounded-lg shadow-2xl w-full max-w-sm m-4" style="background-color: #1a171e;">
                 <div class="p-4 border-b border-gray-700">
                     <h3 id="password-modal-title" class="text-lg font-semibold">enter pass</h3>
                 </div>
@@ -129,7 +124,7 @@
                     <input id="password-input" type="password" class="w-full bg-gray-700 border border-gray-600 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="Password...">
                     <p id="password-error" class="text-red-500 text-sm mt-2 hidden">wrong pass</p>
                 </div>
-                <div class="p-4 flex justify-end gap-2 bg-gray-800 rounded-b-lg">
+                <div class="p-4 flex justify-end gap-2 rounded-b-lg">
                     <button id="cancel-login-btn" class="px-4 py-2 bg-gray-600 hover:bg-gray-500 rounded-md font-semibold">nah</button>
                     <button id="submit-login-btn" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-md font-semibold">go</button>
                 </div>
@@ -138,12 +133,12 @@
 
         <!-- Confirmation Modal -->
         <div id="confirm-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center modal-backdrop">
-            <div class="bg-gray-800 rounded-lg shadow-2xl w-full max-w-sm m-4">
+            <div class="rounded-lg shadow-2xl w-full max-w-sm m-4" style="background-color: #1a171e;">
                 <div class="p-4">
                     <h3 id="confirm-modal-title" class="text-lg font-semibold">are u sure?</h3>
                     <p id="confirm-modal-text" class="text-gray-400 mt-2">this cannot be undone</p>
                 </div>
-                <div class="p-4 flex justify-end gap-2 bg-gray-900 rounded-b-lg">
+                <div class="p-4 flex justify-end gap-2 rounded-b-lg">
                     <button id="confirm-cancel-btn" class="px-4 py-2 bg-gray-600 hover:bg-gray-500 rounded-md font-semibold">cancel</button>
                     <button id="confirm-action-btn" class="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-md font-semibold">delete</button>
                 </div>
@@ -156,8 +151,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, getDoc, setDoc, onSnapshot, collection, addDoc, serverTimestamp, updateDoc, arrayUnion, arrayRemove, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-        import { getStorage, ref, uploadString, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js";
-
+        
         // --- Firebase Config ---
         const firebaseConfig = {
             apiKey: "AIzaSyCjO0Z-aMLpH1b4sQ_bT3A_8m9DDeKlk7E",
@@ -171,19 +165,20 @@
         
         // --- Character & User Config ---
         const characters = {
-            'rishu': { name: 'rishu', password: '42069', isAdmin: false, image: 'rishu.jpg' },
-            'tugemut': { name: 'tugemut', password: 'fish', isAdmin: false, image: 'tugemut.jpg' },
-            'lyly': { name: 'lyly', password: 'aaaa', isAdmin: false, image: 'lyly.jpg' },
-            'tavima': { name: 'tavima', password: 'tazmani', isAdmin: false, image: 'tavima.jpg' },
-            'keldonus': { name: 'keldonus', password: 'alina', isAdmin: true, image: 'kel.jpg' },
+            'rishu': { name: 'rishu', password: '42069', isAdmin: false, image: 'rishu.jpg', color: '#66a76d' },
+            'tugemut': { name: 'tugemut', password: 'fish', isAdmin: false, image: 'tugemut.jpg', color: '#916f34' },
+            'lyly': { name: 'lyly', password: 'aaaa', isAdmin: false, image: 'lyly.jpg', color: '#8850a9' },
+            'tavima': { name: 'tavima', password: 'tazmani', isAdmin: false, image: 'tavima.jpg', color: '#4f7caa' },
+            'keldonus': { name: 'keldonus', password: 'alina', isAdmin: true, image: 'kel.jpg', color: '#5f50a9' },
+            'thalen': { name: 'thalen', password: 'alina', isAdmin: false, image: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%232dd4bf'/%3E%3Ctext x='50' y='55' font-family='Arial' font-size='20' fill='white' text-anchor='middle'%3Ethalen%3C/text%3E%3C/svg%3E`, color: '#2dd4bf' },
+            'zail': { name: 'zail', password: 'alina', isAdmin: false, image: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%23f87171'/%3E%3Ctext x='50' y='55' font-family='Arial' font-size='24' fill='white' text-anchor='middle'%3Ezail%3C/text%3E%3C/svg%3E`, color: '#f87171' },
         };
 
         const appId = firebaseConfig.projectId || 'dnd-feed-app-public';
         
         // --- App State ---
-        let app, auth, db, storage;
+        let app, auth, db;
         let currentUser = null;
-        let pastedImageData = null;
         let selectedCharacterId = null;
         let postToDeleteId = null;
         let replyingToPostId = null;
@@ -192,7 +187,6 @@
         // --- UI Elements ---
         const loginScreen = document.getElementById('login-screen');
         const mainAppScreen = document.getElementById('main-app-screen');
-        const authStatus = document.getElementById('auth-status');
         const feedContainer = document.getElementById('feed-container');
         const userAvatarImg = document.getElementById('user-avatar-img');
         const userName = document.getElementById('user-name');
@@ -203,10 +197,6 @@
         const discardPostBtn = document.getElementById('discard-post-btn');
         const sendPostBtn = document.getElementById('send-post-btn');
         const logoutButton = document.getElementById('logout-button');
-        
-        const pastedImagePreviewContainer = document.getElementById('pasted-image-preview-container');
-        const pastedImagePreview = document.getElementById('pasted-image-preview');
-        const removeImageBtn = document.getElementById('remove-image-btn');
         
         const characterSelectionContainer = document.getElementById('character-selection-container');
         const passwordModal = document.getElementById('password-modal');
@@ -262,16 +252,23 @@
             posts.forEach(post => {
                 const postElement = document.createElement('div');
                 
-                let authorName, authorImage;
+                let authorName, authorImage, authorColor;
                 const anonAvatar = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%234b5563'/%3E%3C/svg%3E`;
 
                 if (post.isAnonymous) {
                     authorName = 'anon';
                     authorImage = anonAvatar;
+                    authorColor = '#6b7280'; // gray-500
                 } else {
                     const character = Object.values(characters).find(c => c.name === post.authorName);
                     authorName = post.authorName;
-                    authorImage = character ? character.image : anonAvatar;
+                    if (character) {
+                        authorImage = character.image;
+                        authorColor = character.color;
+                    } else {
+                        authorImage = anonAvatar;
+                        authorColor = '#d1d5db'; // gray-300
+                    }
                 }
 
                 const isMentioned = currentUser && post.text && post.text.toLowerCase().includes(`@${currentUser.name.toLowerCase()}`);
@@ -281,6 +278,7 @@
                 const likes = post.likes || [];
                 const likeCount = likes.length;
                 const isLiked = currentUser && likes.includes(currentUser.userId);
+                const likeCountDisplay = likeCount > 0 ? likeCount : '';
 
                 const deleteButtonHTML = currentUser && currentUser.isAdmin ? `
                     <button class="delete-post-btn text-gray-500 hover:text-red-500" data-id="${post.id}">
@@ -298,20 +296,19 @@
                         <div class="flex-1">
                             <div class="flex justify-between items-center">
                                 <div>
-                                    <p class="font-bold ${post.isAnonymous ? 'text-gray-500' : 'text-gray-300'}">${authorName}</p>
+                                    <p class="font-bold" style="color: ${authorColor};">${authorName}</p>
                                     <p class="text-xs text-gray-400">${timeAgo(post.timestamp)}</p>
                                 </div>
                                 <div class="flex items-center gap-4 pointer-events-auto">
                                     ${deleteButtonHTML}
                                     <div class="like-button flex items-center gap-2 text-gray-400 cursor-pointer transition-colors hover:text-white">
-                                        <span class="like-count font-medium">${likeCount}</span>
+                                        <span class="like-count font-medium min-w-[1ch] text-right">${likeCountDisplay}</span>
                                         <svg class="like-heart" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="${isLiked ? '#FF70A2' : 'none'}" stroke="${isLiked ? '#FF70A2' : 'currentColor'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
                                     </div>
                                 </div>
                             </div>
                             ${replyIndicatorHTML}
                             <p class="text-gray-300 whitespace-pre-wrap mt-2">${parseAndHighlightMentions(post.text)}</p>
-                            ${post.imageUrl ? `<img src="${post.imageUrl}" class="mt-3 rounded-lg w-full h-auto object-cover"/>` : ''}
                         </div>
                     </div>
                 `;
@@ -331,14 +328,15 @@
         const setupUIForUser = (userProfile) => {
             currentUser = userProfile;
             userName.textContent = userProfile.name;
+            userName.style.color = userProfile.color;
             userAvatarImg.src = userProfile.image;
             showView('main-app-screen');
         };
 
         const handleLogin = async () => {
-             if (!auth.currentUser) {
-                console.error("login failed: user not authenticated.");
-                passwordError.textContent = "auth failed. pls refresh.";
+             if (!auth || !auth.currentUser) {
+                console.error("Login failed: user not authenticated.");
+                passwordError.textContent = "Authentication failed. Please refresh.";
                 passwordError.classList.remove('hidden');
                 return;
              }
@@ -351,6 +349,7 @@
                     characterId: selectedCharacterId, 
                     isAdmin: character.isAdmin,
                     image: character.image,
+                    color: character.color,
                     userId: auth.currentUser.uid 
                 };
                 const userDocRef = doc(db, `artifacts/${appId}/users`, auth.currentUser.uid);
@@ -358,7 +357,7 @@
                 setupUIForUser(userProfile);
                 passwordModal.classList.add('hidden');
              } else {
-                passwordError.textContent = "wrong password.";
+                passwordError.textContent = "Wrong password.";
                 passwordError.classList.remove('hidden');
              }
         }
@@ -366,8 +365,6 @@
         const closeAndResetPostModal = () => {
             newPostModal.classList.add('hidden');
             postTextarea.value = '';
-            pastedImageData = null;
-            pastedImagePreviewContainer.classList.add('hidden');
             anonCheckbox.checked = false;
             // Reset reply state
             replyingToPostId = null;
@@ -396,6 +393,7 @@
 
 
         logoutButton.addEventListener('click', async () => {
+            if (!auth.currentUser) return;
             const userDocRef = doc(db, `artifacts/${appId}/users`, auth.currentUser.uid);
             await setDoc(userDocRef, {deleted: true}); 
             currentUser = null;
@@ -429,7 +427,7 @@
                 const postId = deleteButton.dataset.id;
                 if (postId) {
                     postToDeleteId = postId;
-                    confirmModalText.textContent = "this post will be deleted.";
+                    confirmModalText.textContent = "This post will be permanently deleted.";
                     confirmModal.classList.remove('hidden');
                 }
                 return; // Stop further processing
@@ -465,31 +463,26 @@
             }
         });
 
-        newPostBtn.addEventListener('click', () => newPostModal.classList.remove('hidden'));
+        newPostBtn.addEventListener('click', () => {
+            newPostModal.classList.remove('hidden');
+            postTextarea.focus();
+        });
+
         discardPostBtn.addEventListener('click', closeAndResetPostModal);
 
         sendPostBtn.addEventListener('click', async () => {
             const text = postTextarea.value.trim();
-            if (!text && !pastedImageData) return;
+            if (!text) return;
 
             sendPostBtn.disabled = true;
             sendPostBtn.textContent = 'yapping...';
 
-            let imageUrl = null;
             try {
-                if (pastedImageData) {
-                    const storageRef = ref(storage, `artifacts/${appId}/public/images/${Date.now()}-${Math.random().toString(36).substring(2)}`);
-                    const uploadResult = await uploadString(storageRef, pastedImageData, 'data_url');
-                    imageUrl = await getDownloadURL(uploadResult.ref);
-                }
-                
                 const isAnonymous = anonCheckbox.checked;
-
                 const newPost = {
                     authorName: currentUser.name,
                     authorId: auth.currentUser.uid,
                     text: text,
-                    imageUrl: imageUrl, 
                     timestamp: serverTimestamp(),
                     likes: [],
                     replyToId: replyingToPostId,
@@ -509,32 +502,9 @@
         });
 
         postTextarea.addEventListener('input', () => {
-            sendPostBtn.disabled = postTextarea.value.trim().length === 0 && !pastedImageData;
-        });
-
-        postTextarea.addEventListener('paste', (event) => {
-            const items = (event.clipboardData || event.originalEvent.clipboardData).items;
-            for (const item of items) {
-                if (item.type.indexOf('image') === 0) {
-                    const blob = item.getAsFile();
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        pastedImageData = e.target.result; 
-                        pastedImagePreview.src = pastedImageData;
-                        pastedImagePreviewContainer.classList.remove('hidden');
-                        sendPostBtn.disabled = false;
-                    };
-                    reader.readAsDataURL(blob);
-                }
-            }
-        });
-
-        removeImageBtn.addEventListener('click', () => {
-            pastedImageData = null;
-            pastedImagePreview.src = '';
-            pastedImagePreviewContainer.classList.add('hidden');
             sendPostBtn.disabled = postTextarea.value.trim().length === 0;
         });
+
 
         // --- Initialization ---
         const initialize = () => {
@@ -546,12 +516,10 @@
                 </div>
             `).join('');
 
-
             // Check if firebaseConfig is filled
             if (!firebaseConfig.apiKey) {
-                authStatus.textContent = 'Firebase config is missing.';
                 if(window.self === window.top) { // Avoid alert in iframes
-                    alert("Error: Firebase configuration is missing from the code. Please follow the setup instructions.");
+                    document.body.innerHTML = `<div class="text-red-500 text-center p-8"><strong>Error:</strong> Firebase configuration is missing. Please follow the setup instructions to add your own Firebase project credentials.</div>`;
                 }
                 return;
             }
@@ -559,18 +527,15 @@
             app = initializeApp(firebaseConfig);
             db = getFirestore(app);
             auth = getAuth(app);
-            storage = getStorage(app); 
 
             onAuthStateChanged(auth, async (user) => {
                 if (user) {
-                    authStatus.textContent = 'checking character...';
                     const userDocRef = doc(db, `artifacts/${appId}/users`, user.uid);
                     const userDoc = await getDoc(userDocRef);
 
                     if (userDoc.exists() && !userDoc.data().deleted) {
                         setupUIForUser(userDoc.data());
                     } else {
-                        authStatus.textContent = 'Ready!';
                         showView('login-screen');
                     }
                     
@@ -582,24 +547,32 @@
                         });
                         posts.sort((a, b) => (b.timestamp?.toDate() || 0) - (a.timestamp?.toDate() || 0));
                         renderPosts(posts);
+                    }, (error) => {
+                        console.error("Snapshot listener error:", error);
+                        feedContainer.innerHTML = `<div class="text-center text-red-400 mt-10 p-4 border border-red-500 bg-red-900 bg-opacity-30 rounded-lg">
+                            <p class="font-bold text-lg">Database Error</p>
+                            <p>Could not load posts due to a permission error.</p>
+                            <p class="mt-4 text-sm text-gray-400">Please ensure the Firestore Security Rules in your Firebase project are set up correctly. This is the most common cause of this issue.</p>
+                        </div>`;
                     });
 
                 } else {
-                    authStatus.textContent = 'auth failed. pls refresh.';
+                    console.error("Authentication failed and no user is available.");
                 }
             });
 
             (async () => {
                 try {
-                    authStatus.textContent = 'auth...';
                     await signInAnonymously(auth);
                 } catch (error) {
-                    console.error("auth Error: ", error);
-                    let errorMessage = 'could not connect. pls refresh.';
-                    if (error.code === 'auth/admin-restricted-operation') {
-                        errorMessage = 'connection error: anon sign-in not enabled for this project. Please enable it in your Firebase Console under Authentication -> Sign-in method.';
+                    console.error("Anonymous sign-in error: ", error);
+                     if(window.self === window.top) {
+                        let errorMessage = 'Could not connect to the authentication service. Please refresh the page.';
+                        if (error.code === 'auth/admin-restricted-operation') {
+                            errorMessage = 'Connection Error: Anonymous sign-in is not enabled for this project. Please go to your Firebase Console -> Authentication -> Sign-in method and enable Anonymous sign-in.';
+                        }
+                        document.body.innerHTML = `<div class="text-red-500 text-center p-8"><strong>Error:</strong> ${errorMessage}</div>`;
                     }
-                    authStatus.textContent = errorMessage;
                 }
             })();
         };
@@ -608,5 +581,4 @@
     </script>
 </body>
 </html>
-
 
