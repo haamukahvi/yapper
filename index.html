@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>D&D Campaign Feed</title>
+    <title>yapper</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -46,12 +46,12 @@
 
         <!-- Login Screen -->
         <div id="login-screen" class="flex flex-col items-center justify-center h-full p-8 text-center">
-            <h1 class="text-3xl font-bold mb-4">Choose Your Character</h1>
-            <p class="text-gray-400 mb-12">Tap your character to log in.</p>
+            <h1 class="text-3xl font-bold mb-4">login</h1>
+            <p class="text-gray-400 mb-12">tap character</p>
             <div id="character-selection-container" class="grid grid-cols-3 gap-4">
                 <!-- Characters will be injected here by JS -->
             </div>
-             <p id="auth-status" class="mt-8 text-sm text-gray-500">Connecting...</p>
+             <p id="auth-status" class="mt-8 text-sm text-gray-500">connecting...</p>
         </div>
 
         <!-- Main App Screen -->
@@ -75,7 +75,7 @@
             <!-- New Post Button -->
             <div class="p-4">
                  <button id="new-post-btn" class="w-full text-white font-bold py-4 px-4 rounded-full shadow-lg transition-all transform hover:scale-105" style="background-color: #7F3BC3;">
-                    + New Post
+                    + new yap
                 </button>
             </div>
         </div>
@@ -84,18 +84,18 @@
         <div id="new-post-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center modal-backdrop">
              <div class="bg-gray-800 rounded-lg shadow-2xl w-full max-w-sm m-4">
                 <div class="p-4 border-b border-gray-700">
-                    <h3 class="text-lg font-semibold">Create a new post</h3>
+                    <h3 class="text-lg font-semibold">create new yap</h3>
                 </div>
                 <div class="p-4">
                     <div id="pasted-image-preview-container" class="mb-2 hidden">
                          <img id="pasted-image-preview" class="max-h-40 rounded-lg w-auto mx-auto" src="" />
-                         <button id="remove-image-btn" class="w-full text-sm text-red-500 hover:underline mt-2">Remove Image</button>
+                         <button id="remove-image-btn" class="w-full text-sm text-red-500 hover:underline mt-2">remove pic</button>
                     </div>
-                    <textarea id="post-textarea" class="w-full h-32 bg-gray-700 border border-gray-600 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none" placeholder="What's happening in the campaign? You can also paste an image."></textarea>
+                    <textarea id="post-textarea" class="w-full h-32 bg-gray-700 border border-gray-600 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none" placeholder="what's happening? u can also paste a pic"></textarea>
                 </div>
                 <div class="p-4 flex justify-end gap-2 bg-gray-800 rounded-b-lg">
-                    <button id="discard-post-btn" class="px-4 py-2 bg-gray-600 hover:bg-gray-500 rounded-md font-semibold">Discard</button>
-                    <button id="send-post-btn" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-md font-semibold disabled:bg-purple-900 disabled:cursor-not-allowed" disabled>Send</button>
+                    <button id="discard-post-btn" class="px-4 py-2 bg-gray-600 hover:bg-gray-500 rounded-md font-semibold">nah</button>
+                    <button id="send-post-btn" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-md font-semibold disabled:bg-purple-900 disabled:cursor-not-allowed" disabled>yap</button>
                 </div>
             </div>
         </div>
@@ -104,15 +104,15 @@
         <div id="password-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center modal-backdrop">
             <div class="bg-gray-800 rounded-lg shadow-2xl w-full max-w-sm m-4">
                 <div class="p-4 border-b border-gray-700">
-                    <h3 id="password-modal-title" class="text-lg font-semibold">Enter Password</h3>
+                    <h3 id="password-modal-title" class="text-lg font-semibold">enter pass</h3>
                 </div>
                 <div class="p-4">
                     <input id="password-input" type="password" class="w-full bg-gray-700 border border-gray-600 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="Password...">
-                    <p id="password-error" class="text-red-500 text-sm mt-2 hidden">Incorrect password.</p>
+                    <p id="password-error" class="text-red-500 text-sm mt-2 hidden">wrong pass</p>
                 </div>
                 <div class="p-4 flex justify-end gap-2 bg-gray-800 rounded-b-lg">
-                    <button id="cancel-login-btn" class="px-4 py-2 bg-gray-600 hover:bg-gray-500 rounded-md font-semibold">Cancel</button>
-                    <button id="submit-login-btn" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-md font-semibold">Login</button>
+                    <button id="cancel-login-btn" class="px-4 py-2 bg-gray-600 hover:bg-gray-500 rounded-md font-semibold">nah</button>
+                    <button id="submit-login-btn" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-md font-semibold">go</button>
                 </div>
             </div>
         </div>
@@ -121,12 +121,12 @@
         <div id="confirm-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center modal-backdrop">
             <div class="bg-gray-800 rounded-lg shadow-2xl w-full max-w-sm m-4">
                 <div class="p-4">
-                    <h3 id="confirm-modal-title" class="text-lg font-semibold">Are you sure?</h3>
-                    <p id="confirm-modal-text" class="text-gray-400 mt-2">This action cannot be undone.</p>
+                    <h3 id="confirm-modal-title" class="text-lg font-semibold">are u sure?</h3>
+                    <p id="confirm-modal-text" class="text-gray-400 mt-2">this cannot be undone</p>
                 </div>
                 <div class="p-4 flex justify-end gap-2 bg-gray-900 rounded-b-lg">
-                    <button id="confirm-cancel-btn" class="px-4 py-2 bg-gray-600 hover:bg-gray-500 rounded-md font-semibold">Cancel</button>
-                    <button id="confirm-action-btn" class="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-md font-semibold">Delete</button>
+                    <button id="confirm-cancel-btn" class="px-4 py-2 bg-gray-600 hover:bg-gray-500 rounded-md font-semibold">cancel</button>
+                    <button id="confirm-action-btn" class="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-md font-semibold">delete</button>
                 </div>
             </div>
         </div>
@@ -153,11 +153,11 @@
         // --- Character & User Config ---
         // IMPORTANT: Change these passwords!
         const characters = {
-            'ranger': { name: 'Green Ranger', password: 'a', isAdmin: false, image: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%2310B981'/%3E%3Ctext x='50' y='55' font-family='Arial' font-size='20' fill='white' text-anchor='middle'%3ERanger%3C/text%3E%3C/svg%3E` },
-            'berserker': { name: 'Brown Berserker', password: 'a', isAdmin: false, image: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%23D97706'/%3E%3Ctext x='50' y='55' font-family='Arial' font-size='16' fill='white' text-anchor='middle'%3EBerserker%3C/text%3E%3C/svg%3E` },
-            'mage': { name: 'Purple Mage', password: 'a', isAdmin: false, image: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%239333EA'/%3E%3Ctext x='50' y='55' font-family='Arial' font-size='24' fill='white' text-anchor='middle'%3EMage%3C/text%3E%3C/svg%3E` },
-            'rogue': { name: 'Blue Rogue', password: 'a', isAdmin: false, image: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%233B82F6'/%3E%3Ctext x='50' y='55' font-family='Arial' font-size='24' fill='white' text-anchor='middle'%3ERogue%3C/text%3E%3C/svg%3E` },
-            'admin': { name: 'Dungeon Master', password: 'admin', isAdmin: true, image: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%234b5563'/%3E%3Ctext x='50' y='55' font-family='Arial' font-size='24' fill='white' text-anchor='middle'%3EAdmin%3C/text%3E%3C/svg%3E` },
+            'rishu': { name: 'rishu', password: 'a', isAdmin: false, image: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%2310B981'/%3E%3Ctext x='50' y='55' font-family='Arial' font-size='20' fill='white' text-anchor='middle'%3ERanger%3C/text%3E%3C/svg%3E` },
+            'tugemut': { name: 'tugemut', password: 'a', isAdmin: false, image: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%23D97706'/%3E%3Ctext x='50' y='55' font-family='Arial' font-size='16' fill='white' text-anchor='middle'%3EBerserker%3C/text%3E%3C/svg%3E` },
+            'lyly': { name: 'lyly', password: 'a', isAdmin: false, image: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%239333EA'/%3E%3Ctext x='50' y='55' font-family='Arial' font-size='24' fill='white' text-anchor='middle'%3EMage%3C/text%3E%3C/svg%3E` },
+            'tavima': { name: 'tavima', password: 'a', isAdmin: false, image: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%233B82F6'/%3E%3Ctext x='50' y='55' font-family='Arial' font-size='24' fill='white' text-anchor='middle'%3ERogue%3C/text%3E%3C/svg%3E` },
+            'keldonus': { name: 'keldonus', password: 'admin', isAdmin: true, image: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%234b5563'/%3E%3Ctext x='50' y='55' font-family='Arial' font-size='24' fill='white' text-anchor='middle'%3EAdmin%3C/text%3E%3C/svg%3E` },
         };
 
         const appId = firebaseConfig.projectId || 'dnd-feed-app-public';
@@ -217,16 +217,16 @@
             interval = seconds / 3600;
             if (interval > 1) return Math.floor(interval) + " hours ago";
             interval = seconds / 60;
-            if (interval > 1) return Math.floor(interval) + " minutes ago";
-            return Math.floor(seconds) < 5 ? 'just now' : Math.floor(seconds) + ' seconds ago';
+            if (interval > 1) return Math.floor(interval) + " min ago";
+            return Math.floor(seconds) < 5 ? 'just now' : Math.floor(seconds) + ' sec ago';
         };
 
         const renderPosts = (posts) => {
             feedContainer.innerHTML = '';
             if (posts.length === 0) {
                  feedContainer.innerHTML = `<div class="text-center text-gray-500 mt-10">
-                    <p class="text-lg">The feed is empty.</p>
-                    <p>Be the first to post about your adventure!</p>
+                    <p class="text-lg">feed is empty</p>
+                    <p>be the first to post</p>
                 </div>`;
                 return;
             }
@@ -289,8 +289,8 @@
 
         const handleLogin = async () => {
              if (!auth.currentUser) {
-                console.error("Login attempt failed: User not authenticated.");
-                passwordError.textContent = "Authentication failed. Please refresh.";
+                console.error("login failed: user not authenticated.");
+                passwordError.textContent = "auth failed. pls refresh.";
                 passwordError.classList.remove('hidden');
                 return;
              }
@@ -310,7 +310,7 @@
                 setupUIForUser(userProfile);
                 passwordModal.classList.add('hidden');
              } else {
-                passwordError.textContent = "Incorrect password.";
+                passwordError.textContent = "wrong password.";
                 passwordError.classList.remove('hidden');
              }
         }
@@ -331,7 +331,7 @@
         cancelLoginBtn.addEventListener('click', () => passwordModal.classList.add('hidden'));
         submitLoginBtn.addEventListener('click', handleLogin);
         passwordInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') handleLogin();
+            if (e.key === 'enter') handleLogin();
         });
 
 
@@ -369,7 +369,7 @@
                 const postId = deleteButton.dataset.id;
                 if (postId) {
                     postToDeleteId = postId;
-                    confirmModalText.textContent = "This post will be permanently deleted.";
+                    confirmModalText.textContent = "this post will be deleted.";
                     confirmModal.classList.remove('hidden');
                 }
             }
@@ -402,7 +402,7 @@
             if (!text && !pastedImageData) return;
 
             sendPostBtn.disabled = true;
-            sendPostBtn.textContent = 'Sending...';
+            sendPostBtn.textContent = 'yapping...';
 
             let imageUrl = null;
             try {
@@ -431,7 +431,7 @@
                 pastedImageData = null;
                 pastedImagePreviewContainer.classList.add('hidden');
                 pastedImagePreview.src = '';
-                sendPostBtn.textContent = 'Send';
+                sendPostBtn.textContent = 'post';
             }
         });
 
@@ -476,7 +476,7 @@
 
             // Check if firebaseConfig is filled
             if (!firebaseConfig.apiKey) {
-                authStatus.textContent = 'Firebase configuration is missing.';
+                authStatus.textContent = 'Firebase config is missing.';
                 if(window.self === window.top) { // Avoid alert in iframes
                     alert("Error: Firebase configuration is missing from the code. Please follow the setup instructions.");
                 }
@@ -490,7 +490,7 @@
 
             onAuthStateChanged(auth, async (user) => {
                 if (user) {
-                    authStatus.textContent = 'Checking character...';
+                    authStatus.textContent = 'checking character...';
                     const userDocRef = doc(db, `artifacts/${appId}/users`, user.uid);
                     const userDoc = await getDoc(userDocRef);
 
@@ -512,19 +512,19 @@
                     });
 
                 } else {
-                    authStatus.textContent = 'Authentication failed. Please refresh.';
+                    authStatus.textContent = 'auth failed. pls refresh.';
                 }
             });
 
             (async () => {
                 try {
-                    authStatus.textContent = 'Authenticating...';
+                    authStatus.textContent = 'auth...';
                     await signInAnonymously(auth);
                 } catch (error) {
-                    console.error("Authentication Error: ", error);
-                    let errorMessage = 'Could not connect. Please refresh the page.';
+                    console.error("auth Error: ", error);
+                    let errorMessage = 'could not connect. pls refresh.';
                     if (error.code === 'auth/admin-restricted-operation') {
-                        errorMessage = 'Connection Error: Anonymous sign-in is not enabled for this project. Please enable it in your Firebase Console under Authentication -> Sign-in method.';
+                        errorMessage = 'connection error: anon sign-in not enabled for this project. Please enable it in your Firebase Console under Authentication -> Sign-in method.';
                     }
                     authStatus.textContent = errorMessage;
                 }
