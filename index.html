@@ -11,7 +11,9 @@
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #26212B;
+            background-color: #281837; /* Fallback color */
+            background-image: linear-gradient(to bottom, #20162b, #281837);
+            min-height: 100vh;
         }
         .profile-selection-glow:hover {
             box-shadow: 0 0 15px #a78bfa; /* violet-400 */
@@ -27,14 +29,14 @@
             width: 8px;
         }
         ::-webkit-scrollbar-track {
-            background: #1f2937; /* gray-800 */
+            background: #291f37; /* gray-800 */
         }
         ::-webkit-scrollbar-thumb {
-            background: #4b5563; /* gray-600 */
+            background: #534b63; /* gray-600 */
             border-radius: 4px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: #6b7280; /* gray-500 */
+            background: #726b80; /* gray-500 */
         }
         #new-post-btn:hover {
             filter: brightness(0.9);
@@ -49,6 +51,35 @@
             color: #c4b5fd; /* A light purple, tailwind violet-300 */
             font-weight: 600;
         }
+        /* Ensure all avatars are circular and not squished */
+        .avatar {
+            object-fit: cover;
+            flex-shrink: 0; /* Prevents avatar from shrinking in flex containers */
+        }
+        
+        /* New post animation */
+        @keyframes scale-in-bounce {
+            0% {
+                transform: scale(0.8) translateY(-30px);
+                opacity: 0;
+            }
+            60% {
+                transform: scale(1.05) translateY(0);
+                opacity: 1;
+            }
+            80% {
+                transform: scale(0.95);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .new-post-animation {
+            animation: scale-in-bounce 0.5s ease-out forwards;
+        }
+
     </style>
 </head>
 <body class="text-white antialiased">
@@ -58,22 +89,25 @@
 
         <!-- Login Screen -->
         <div id="login-screen" class="flex flex-col items-center justify-center h-full p-8 text-center">
-            <h1 class="text-5xl font-bold mb-8" style="color: #7F3BC3;">yapper</h1>
-            <h2 class="text-3xl font-bold mb-4">login</h2>
-            <div id="character-selection-container" class="grid grid-cols-3 gap-4 mt-8">
-                <!-- Characters will be injected here by JS -->
+            <div class="flex-grow flex flex-col items-center justify-center">
+                <h1 class="text-5xl font-bold mb-8" style="color: #7F3BC3;">yapper</h1>
+                <h2 class="text-3xl font-bold mb-4">login</h2>
+                <div id="character-selection-container" class="grid grid-cols-2 gap-4 mt-8">
+                    <!-- Characters will be injected here by JS -->
+                </div>
             </div>
+            <button id="admin-login-button" class="text-gray-500 text-sm mt-8 hover:text-gray-300">admin</button>
         </div>
 
         <!-- Main App Screen -->
         <div id="main-app-screen" class="hidden h-full w-full flex-col">
             <!-- Header -->
-            <header class="flex items-center justify-between p-4 backdrop-blur-sm sticky top-0 z-10 border-b border-gray-700" style="background-color: rgba(38, 33, 43, 0.8);">
+            <header class="flex items-center justify-between p-4 backdrop-blur-sm sticky top-0 z-10 border-b border-gray-700" style="background-color: rgba(45, 34, 55, 0.8);">
                 <div class="flex items-center gap-3">
-                    <img id="user-avatar-img" class="w-8 h-8 rounded-full object-cover">
+                    <img id="user-avatar-img" class="w-8 h-8 rounded-full avatar">
                     <span id="user-name" class="font-semibold"></span>
                 </div>
-                <button id="logout-button" title="Log Out">
+                <button id="logout-button" title="log out">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400 hover:text-white"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
                 </button>
             </header>
@@ -86,7 +120,7 @@
             <!-- New Post Button -->
             <div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md p-4 z-20 pointer-events-none">
                  <button id="new-post-btn" class="w-full text-white font-bold py-4 px-4 rounded-full shadow-lg transition-all transform hover:scale-105 pointer-events-auto" style="background-color: #7F3BC3;">
-                    + new yap
+                    new yap
                 </button>
             </div>
         </div>
@@ -99,7 +133,11 @@
                     <p id="replying-to-indicator" class="text-sm text-gray-400 hidden"></p>
                 </div>
                 <div class="p-4">
-                    <textarea id="post-textarea" class="w-full h-32 bg-gray-700 border border-gray-600 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none" placeholder="what's happening?"></textarea>
+                    <textarea id="post-textarea" class="w-full h-28 bg-gray-700 border border-gray-600 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none" placeholder="what's happening?"></textarea>
+                    <div id="image-url-preview-container" class="mt-2 hidden">
+                        <img id="image-url-preview" class="max-h-32 rounded-lg w-auto mx-auto" src="">
+                    </div>
+                    <input type="text" id="image-url-input" class="w-full bg-gray-800 border border-gray-600 rounded-lg p-2 text-sm mt-2 focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="paste image url...">
                 </div>
                 <div class="p-4 flex justify-between items-center gap-2 rounded-b-lg">
                     <div class="flex items-center">
@@ -110,6 +148,36 @@
                         <button id="discard-post-btn" class="px-4 py-2 bg-gray-600 hover:bg-gray-500 rounded-md font-semibold">nah</button>
                         <button id="send-post-btn" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-md font-semibold disabled:bg-purple-900 disabled:cursor-not-allowed" disabled>yap</button>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Password Modal -->
+        <div id="admin-password-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center modal-backdrop">
+            <div class="rounded-lg shadow-2xl w-full max-w-sm m-4" style="background-color: #1a171e;">
+                <div class="p-4 border-b border-gray-700">
+                    <h3 class="text-lg font-semibold">enter admin pass</h3>
+                </div>
+                <div class="p-4">
+                    <input id="admin-password-input" type="password" class="w-full bg-gray-700 border border-gray-600 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="Password...">
+                    <p id="admin-password-error" class="text-red-500 text-sm mt-2 hidden">wrong pass</p>
+                </div>
+                <div class="p-4 flex justify-end gap-2 rounded-b-lg">
+                    <button id="admin-cancel-login-btn" class="px-4 py-2 bg-gray-600 hover:bg-gray-500 rounded-md font-semibold">nah</button>
+                    <button id="admin-submit-login-btn" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-md font-semibold">go</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Selector Modal -->
+        <div id="admin-selector-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center modal-backdrop">
+            <div class="rounded-lg shadow-2xl w-full max-w-sm m-4" style="background-color: #1a171e;">
+                <div class="p-4 border-b border-gray-700 flex justify-between items-center">
+                    <h3 class="text-lg font-semibold">select admin</h3>
+                    <button id="admin-selector-close-btn">&times;</button>
+                </div>
+                <div id="admin-character-selection-container" class="grid grid-cols-3 gap-4 p-4">
+                    <!-- Admin characters will be injected here -->
                 </div>
             </div>
         </div>
@@ -163,16 +231,25 @@
             measurementId: "G-DBSHERXPJ3"
         };
         
-        // --- Character & User Config ---
-        const characters = {
+        // --- Character & User Config --- 
+        const playerCharacters = {
             'rishu': { name: 'rishu', password: '42069', isAdmin: false, image: 'rishu.jpg', color: '#66a76d' },
             'tugemut': { name: 'tugemut', password: 'fish', isAdmin: false, image: 'tugemut.jpg', color: '#916f34' },
             'lyly': { name: 'lyly', password: 'aaaa', isAdmin: false, image: 'lyly.jpg', color: '#8850a9' },
             'tavima': { name: 'tavima', password: 'tazmani', isAdmin: false, image: 'tavima.jpg', color: '#4f7caa' },
-            'keldonus': { name: 'keldonus', password: 'alina', isAdmin: true, image: 'kel.jpg', color: '#5f50a9' },
-            'thalen': { name: 'thalen', password: 'alina', isAdmin: false, image: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%232dd4bf'/%3E%3Ctext x='50' y='55' font-family='Arial' font-size='20' fill='white' text-anchor='middle'%3Ethalen%3C/text%3E%3C/svg%3E`, color: '#2dd4bf' },
-            'zail': { name: 'zail', password: 'alina', isAdmin: false, image: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%23f87171'/%3E%3Ctext x='50' y='55' font-family='Arial' font-size='24' fill='white' text-anchor='middle'%3Ezail%3C/text%3E%3C/svg%3E`, color: '#f87171' },
         };
+
+        const adminCharacters = {
+            'keldonus': { name: 'keldonus', password: 'alina', isAdmin: true, image: 'kel.jpg', color: '#8674ec' },
+            'thalen': { name: 'thalen', password: 'alina', isAdmin: true, image: 'thalen.jpg', color: '#2dd4bf' },
+            'zail': { name: 'zail', password: 'alina', isAdmin: true, image: 'zail.jpg', color: '#f87171' },
+            'jinjin': { name: `jin'jin`, password: 'alina', isAdmin: true, image: 'jinjin.jpg', color: '#5bd3db' },
+            'nia': { name: 'delunia the overlord of eternal damnation', password: 'alina', isAdmin: true, image: 'nia.jpg', color: '#d1b538' },
+            "n'zoth": { name: `n'zoth`, password: 'alina', isAdmin: true, image: 'nzoth.jpg', color: '#c02a10' },
+        };
+        
+        const allCharacters = {...playerCharacters, ...adminCharacters};
+
 
         const appId = firebaseConfig.projectId || 'dnd-feed-app-public';
         
@@ -183,6 +260,7 @@
         let postToDeleteId = null;
         let replyingToPostId = null;
         let replyingToPostAuthor = null;
+        let displayedPostIds = new Set();
 
         // --- UI Elements ---
         const loginScreen = document.getElementById('login-screen');
@@ -194,11 +272,24 @@
         const newPostBtn = document.getElementById('new-post-btn');
         const newPostModal = document.getElementById('new-post-modal');
         const postTextarea = document.getElementById('post-textarea');
+        const imageUrlInput = document.getElementById('image-url-input');
+        const imageUrlPreviewContainer = document.getElementById('image-url-preview-container');
+        const imageUrlPreview = document.getElementById('image-url-preview');
         const discardPostBtn = document.getElementById('discard-post-btn');
         const sendPostBtn = document.getElementById('send-post-btn');
         const logoutButton = document.getElementById('logout-button');
         
         const characterSelectionContainer = document.getElementById('character-selection-container');
+        const adminCharacterSelectionContainer = document.getElementById('admin-character-selection-container');
+        const adminLoginButton = document.getElementById('admin-login-button');
+        const adminPasswordModal = document.getElementById('admin-password-modal');
+        const adminPasswordInput = document.getElementById('admin-password-input');
+        const adminPasswordError = document.getElementById('admin-password-error');
+        const adminCancelLoginBtn = document.getElementById('admin-cancel-login-btn');
+        const adminSubmitLoginBtn = document.getElementById('admin-submit-login-btn');
+        const adminSelectorModal = document.getElementById('admin-selector-modal');
+        const adminSelectorCloseBtn = document.getElementById('admin-selector-close-btn');
+
         const passwordModal = document.getElementById('password-modal');
         const passwordModalTitle = document.getElementById('password-modal-title');
         const passwordInput = document.getElementById('password-input');
@@ -235,13 +326,14 @@
 
         const parseAndHighlightMentions = (text) => {
             if (!text) return '';
-            const characterNames = Object.values(characters).map(c => c.name);
+            const characterNames = Object.values(allCharacters).map(c => c.name);
             const mentionRegex = new RegExp(`@(${characterNames.join('|')})`, 'gi');
             return text.replace(mentionRegex, (match) => `<span class="mention-highlight">${match}</span>`);
         };
 
         const renderPosts = (posts) => {
-            feedContainer.innerHTML = '';
+            const newPostIds = new Set(posts.map(p => p.id));
+            
             if (posts.length === 0) {
                  feedContainer.innerHTML = `<div class="text-center text-gray-500 mt-10">
                     <p class="text-lg">feed is empty</p>
@@ -249,7 +341,17 @@
                 </div>`;
                 return;
             }
+            
+            const fragment = document.createDocumentFragment();
+
             posts.forEach(post => {
+                // If post already exists, just update it without animation
+                const existingPostElement = feedContainer.querySelector(`[data-id='${post.id}']`);
+                if(existingPostElement) {
+                    // This is a simple re-render, could be optimized to only update changed parts
+                    // For now, replacing the whole element is fine for this app's scale.
+                }
+
                 const postElement = document.createElement('div');
                 
                 let authorName, authorImage, authorColor;
@@ -260,7 +362,7 @@
                     authorImage = anonAvatar;
                     authorColor = '#6b7280'; // gray-500
                 } else {
-                    const character = Object.values(characters).find(c => c.name === post.authorName);
+                    const character = allCharacters[post.authorName.toLowerCase().replace(/'/g, "")];
                     authorName = post.authorName;
                     if (character) {
                         authorImage = character.image;
@@ -272,8 +374,15 @@
                 }
 
                 const isMentioned = currentUser && post.text && post.text.toLowerCase().includes(`@${currentUser.name.toLowerCase()}`);
-                postElement.className = `p-4 rounded-lg post-card cursor-pointer ${isMentioned ? 'mentioned-post' : ''}`;
+                postElement.className = `p-4 rounded-lg post-card ${isMentioned ? 'mentioned-post' : ''}`;
                 postElement.dataset.id = post.id;
+                
+                if (!displayedPostIds.has(post.id)) {
+                    postElement.classList.add('new-post-animation');
+                    postElement.addEventListener('animationend', () => {
+                        postElement.classList.remove('new-post-animation');
+                    }, { once: true });
+                }
 
                 const likes = post.likes || [];
                 const likeCount = likes.length;
@@ -285,21 +394,52 @@
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
                     </button>` : '';
                 
-                let replyIndicatorHTML = '';
-                if (post.replyToName) {
-                    replyIndicatorHTML = `<p class="text-xs text-gray-500 mb-2">↪ Replying to <span class="font-semibold text-gray-400">@${post.replyToName}</span></p>`;
+                let replyPreviewHTML = '';
+                if (post.replyToId) {
+                    const originalPost = posts.find(p => p.id === post.replyToId);
+                    if (originalPost) {
+                        let opAuthorName, opAuthorImage, opAuthorColor;
+                        const opAnonAvatar = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%234b5563'/%3E%3C/svg%3E`;
+
+                        if (originalPost.isAnonymous) {
+                            opAuthorName = 'anon'; opAuthorImage = opAnonAvatar; opAuthorColor = '#6b7280';
+                        } else {
+                            const opCharacter = allCharacters[originalPost.authorName.toLowerCase().replace(/'/g, "")];
+                            opAuthorName = originalPost.authorName;
+                            if (opCharacter) {
+                                opAuthorImage = opCharacter.image; opAuthorColor = opCharacter.color;
+                            } else {
+                                opAuthorImage = opAnonAvatar; opAuthorColor = '#d1d5db';
+                            }
+                        }
+                        
+                        const truncatedText = originalPost.text && originalPost.text.length > 70 ? originalPost.text.substring(0, 70) + '...' : originalPost.text;
+
+                        replyPreviewHTML = `
+                            <div class="mt-2 mb-2 p-2 border-l-2 border-gray-600 rounded-r-md bg-black bg-opacity-20">
+                                <div class="flex items-center text-xs text-gray-400">
+                                    <img src="${opAuthorImage}" class="w-4 h-4 rounded-full avatar mr-2">
+                                    <span style="color: ${opAuthorColor}; font-weight: 600;">${opAuthorName}</span>
+                                </div>
+                                <p class="text-xs text-gray-500 mt-1 italic">${truncatedText || ''}</p>
+                            </div>`;
+                    } else {
+                        replyPreviewHTML = `<p class="text-xs text-gray-500 mb-2">↪ Replying to a deleted yap</p>`;
+                    }
                 }
+                
+                const imageHTML = post.imageUrl ? `<img src="${post.imageUrl}" class="mt-3 rounded-lg w-full h-auto object-cover"/>` : '';
 
                 postElement.innerHTML = `
-                    <div class="flex items-start pointer-events-none">
-                        <img src="${authorImage}" class="w-10 h-10 rounded-full mr-3 shrink-0 object-cover">
+                    <div class="flex items-start">
+                        <img src="${authorImage}" class="w-10 h-10 rounded-full mr-3 avatar">
                         <div class="flex-1">
                             <div class="flex justify-between items-center">
                                 <div>
                                     <p class="font-bold" style="color: ${authorColor};">${authorName}</p>
                                     <p class="text-xs text-gray-400">${timeAgo(post.timestamp)}</p>
                                 </div>
-                                <div class="flex items-center gap-4 pointer-events-auto">
+                                <div class="flex items-center gap-4">
                                     ${deleteButtonHTML}
                                     <div class="like-button flex items-center gap-2 text-gray-400 cursor-pointer transition-colors hover:text-white">
                                         <span class="like-count font-medium min-w-[1ch] text-right">${likeCountDisplay}</span>
@@ -307,13 +447,17 @@
                                     </div>
                                 </div>
                             </div>
-                            ${replyIndicatorHTML}
-                            <p class="text-gray-300 whitespace-pre-wrap mt-2">${parseAndHighlightMentions(post.text)}</p>
+                            ${replyPreviewHTML}
+                            <p class="text-gray-300 whitespace-pre-wrap mt-1">${parseAndHighlightMentions(post.text)}</p>
+                            ${imageHTML}
                         </div>
                     </div>
                 `;
-                feedContainer.appendChild(postElement);
+                fragment.appendChild(postElement);
             });
+            feedContainer.innerHTML = '';
+            feedContainer.appendChild(fragment);
+            displayedPostIds = newPostIds;
         };
         
         const showView = (view) => {
@@ -341,7 +485,7 @@
                 return;
              }
              const enteredPassword = passwordInput.value;
-             const character = characters[selectedCharacterId];
+             const character = allCharacters[selectedCharacterId];
 
              if (enteredPassword === character.password) {
                 const userProfile = { 
@@ -356,8 +500,9 @@
                 await setDoc(userDocRef, userProfile);
                 setupUIForUser(userProfile);
                 passwordModal.classList.add('hidden');
+                adminSelectorModal.classList.add('hidden');
              } else {
-                passwordError.textContent = "Wrong password.";
+                passwordError.textContent = "wrong pass";
                 passwordError.classList.remove('hidden');
              }
         }
@@ -365,6 +510,9 @@
         const closeAndResetPostModal = () => {
             newPostModal.classList.add('hidden');
             postTextarea.value = '';
+            imageUrlInput.value = '';
+            imageUrlPreviewContainer.classList.add('hidden');
+            imageUrlPreview.src = '';
             anonCheckbox.checked = false;
             // Reset reply state
             replyingToPostId = null;
@@ -373,17 +521,43 @@
         };
 
         // --- Event Listeners ---
-        characterSelectionContainer.addEventListener('click', (e) => {
+        const openCharacterPasswordPrompt = (e) => {
             const characterDiv = e.target.closest('.character-choice');
             if (characterDiv) {
                 selectedCharacterId = characterDiv.dataset.id;
-                passwordModalTitle.textContent = `Login as ${characters[selectedCharacterId].name}`;
+                passwordModalTitle.textContent = `Login as ${allCharacters[selectedCharacterId].name}`;
                 passwordInput.value = '';
                 passwordError.classList.add('hidden');
                 passwordModal.classList.remove('hidden');
                 passwordInput.focus();
             }
+        }
+
+        characterSelectionContainer.addEventListener('click', openCharacterPasswordPrompt);
+        adminCharacterSelectionContainer.addEventListener('click', openCharacterPasswordPrompt);
+        
+        adminLoginButton.addEventListener('click', () => {
+            adminPasswordInput.value = '';
+            adminPasswordError.classList.add('hidden');
+            adminPasswordModal.classList.remove('hidden');
+            adminPasswordInput.focus();
         });
+
+        adminCancelLoginBtn.addEventListener('click', () => adminPasswordModal.classList.add('hidden'));
+        
+        adminSubmitLoginBtn.addEventListener('click', () => {
+            if (adminPasswordInput.value === 'admin') {
+                adminPasswordModal.classList.add('hidden');
+                adminSelectorModal.classList.remove('hidden');
+            } else {
+                adminPasswordError.classList.remove('hidden');
+            }
+        });
+        adminPasswordInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') adminSubmitLoginBtn.click();
+        });
+
+        adminSelectorCloseBtn.addEventListener('click', () => adminSelectorModal.classList.add('hidden'));
 
         cancelLoginBtn.addEventListener('click', () => passwordModal.classList.add('hidden'));
         submitLoginBtn.addEventListener('click', handleLogin);
@@ -407,6 +581,7 @@
 
             // Handle like action
             if (likeButton && currentUser) {
+                e.stopPropagation();
                 const postId = postCard.dataset.id;
                 if (!postId) return;
                 const postDocRef = doc(db, `artifacts/${appId}/public/data/posts`, postId);
@@ -419,21 +594,22 @@
                 } else {
                     await updateDoc(postDocRef, { likes: arrayUnion(currentUser.userId) });
                 }
-                return; // Stop further processing
+                return;
             }
 
             // Handle delete action
             if (deleteButton && currentUser && currentUser.isAdmin) {
+                e.stopPropagation();
                 const postId = deleteButton.dataset.id;
                 if (postId) {
                     postToDeleteId = postId;
-                    confirmModalText.textContent = "This post will be permanently deleted.";
+                    confirmModalText.textContent = "this will be deleted";
                     confirmModal.classList.remove('hidden');
                 }
-                return; // Stop further processing
+                return;
             }
             
-            // Handle reply action if the click was on the card itself
+            // Handle reply action
             if (postCard) {
                 const postId = postCard.dataset.id;
                 const authorNameEl = postCard.querySelector('.font-bold');
@@ -441,7 +617,7 @@
                     replyingToPostId = postId;
                     replyingToPostAuthor = authorNameEl.textContent;
                     const replyingToIndicator = document.getElementById('replying-to-indicator');
-                    replyingToIndicator.textContent = `Replying to @${replyingToPostAuthor}`;
+                    replyingToIndicator.textContent = `replying to @${replyingToPostAuthor}`;
                     replyingToIndicator.classList.remove('hidden');
                     newPostModal.classList.remove('hidden');
                     postTextarea.focus();
@@ -472,7 +648,8 @@
 
         sendPostBtn.addEventListener('click', async () => {
             const text = postTextarea.value.trim();
-            if (!text) return;
+            const imageUrl = imageUrlInput.value.trim();
+            if (!text && !imageUrl) return;
 
             sendPostBtn.disabled = true;
             sendPostBtn.textContent = 'yapping...';
@@ -483,6 +660,7 @@
                     authorName: currentUser.name,
                     authorId: auth.currentUser.uid,
                     text: text,
+                    imageUrl: imageUrl || null,
                     timestamp: serverTimestamp(),
                     likes: [],
                     replyToId: replyingToPostId,
@@ -501,24 +679,44 @@
             }
         });
 
-        postTextarea.addEventListener('input', () => {
-            sendPostBtn.disabled = postTextarea.value.trim().length === 0;
+        const checkSendButtonState = () => {
+            const text = postTextarea.value.trim();
+            const imageUrl = imageUrlInput.value.trim();
+            sendPostBtn.disabled = !text && !imageUrl;
+        }
+
+        postTextarea.addEventListener('input', checkSendButtonState);
+        imageUrlInput.addEventListener('input', () => {
+            const url = imageUrlInput.value.trim();
+            const isImage = /\.(jpeg|jpg|gif|png|webp)$/i.test(url);
+            if (isImage) {
+                imageUrlPreview.src = url;
+                imageUrlPreviewContainer.classList.remove('hidden');
+            } else {
+                imageUrlPreviewContainer.classList.add('hidden');
+            }
+            checkSendButtonState();
         });
 
 
         // --- Initialization ---
         const initialize = () => {
-             // Populate character selection
-            characterSelectionContainer.innerHTML = Object.entries(characters).map(([id, char]) => `
+            const createCharacterHTML = (char, id) => `
                 <div data-id="${id}" class="character-choice cursor-pointer flex flex-col items-center gap-2 p-2 rounded-lg transition-all transform hover:scale-110 profile-selection-glow">
-                    <img src="${char.image}" class="w-24 h-24 rounded-full object-cover border-2 border-gray-600">
+                    <img src="${char.image}" class="w-24 h-24 rounded-full avatar border-2 border-gray-600">
                     <p class="font-semibold">${char.name}</p>
-                </div>
-            `).join('');
+                </div>`;
+
+             // Populate character selection
+            characterSelectionContainer.innerHTML = Object.entries(playerCharacters)
+                .map(([id, char]) => createCharacterHTML(char, id)).join('');
+            
+            adminCharacterSelectionContainer.innerHTML = Object.entries(adminCharacters)
+                .map(([id, char]) => createCharacterHTML(char, id)).join('');
 
             // Check if firebaseConfig is filled
             if (!firebaseConfig.apiKey) {
-                if(window.self === window.top) { // Avoid alert in iframes
+                if(window.self === window.top) { 
                     document.body.innerHTML = `<div class="text-red-500 text-center p-8"><strong>Error:</strong> Firebase configuration is missing. Please follow the setup instructions to add your own Firebase project credentials.</div>`;
                 }
                 return;
@@ -581,4 +779,5 @@
     </script>
 </body>
 </html>
+
 
