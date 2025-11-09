@@ -89,6 +89,110 @@
             animation: slide-out-down 0.5s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards;
         }
 
+        .tab-button {
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .tab-button:hover {
+            border-color: rgba(167, 139, 250, 0.4);
+        }
+
+        .tab-button.tab-active {
+            background-color: rgba(127, 59, 195, 0.3);
+            border-color: rgba(167, 139, 250, 0.6);
+            color: #f9f5ff;
+            box-shadow: 0 12px 25px rgba(127, 59, 195, 0.25);
+        }
+
+        #murokellari-map-container {
+            position: relative;
+            width: 100%;
+            max-width: 960px;
+            aspect-ratio: 16 / 9;
+            border-radius: 1.5rem;
+            overflow: hidden;
+            border: 1px solid rgba(148, 163, 184, 0.25);
+            background: radial-gradient(circle at 30% 20%, rgba(127, 59, 195, 0.2), rgba(20, 13, 29, 0.6));
+        }
+
+        #murokellari-map-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            pointer-events: none;
+            user-select: none;
+        }
+
+        #murokellari-markers-layer {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        .murokellari-marker {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transform: translate(-50%, -50%);
+            cursor: grab;
+            pointer-events: auto;
+            touch-action: none;
+            transition: filter 0.2s ease;
+        }
+
+        .murokellari-marker.dragging {
+            filter: brightness(1.1);
+        }
+
+        .murokellari-marker-avatar {
+            width: 3.5rem;
+            height: 3.5rem;
+            border-radius: 9999px;
+            border: 2px solid rgba(255, 255, 255, 0.55);
+            overflow: hidden;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+            background: rgba(15, 11, 26, 0.6);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .murokellari-marker img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .murokellari-marker.dragging .murokellari-marker-avatar {
+            transform: scale(1.06);
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.55);
+        }
+
+        .murokellari-marker-label {
+            margin-top: 0.4rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: lowercase;
+            text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+            pointer-events: none;
+        }
+
+        .murokellari-map-overlay {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background: linear-gradient(135deg, rgba(10, 8, 20, 0.6), rgba(18, 13, 27, 0.2));
+        }
+
+        @media (max-width: 640px) {
+            .murokellari-marker-avatar {
+                width: 2.85rem;
+                height: 2.85rem;
+            }
+        }
+
     </style>
 </head>
 <body class="text-white antialiased">
@@ -124,13 +228,36 @@
                 </button>
             </header>
 
+            <!-- Tabs -->
+            <nav class="px-4 pt-3 pb-2">
+                <div class="flex gap-2 rounded-full border border-gray-700/60 bg-[rgba(18,12,29,0.65)] p-1">
+                    <button id="feed-tab-button" class="tab-button flex-1 rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-wide text-gray-300">feed</button>
+                    <button id="murokellari-tab-button" class="tab-button flex-1 rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-wide text-gray-300">murokellari</button>
+                </div>
+            </nav>
+
             <!-- Feed -->
             <main id="feed-container" class="flex-1 overflow-y-auto p-4 space-y-4 pb-24">
                 <!-- Posts will be injected here -->
             </main>
 
+            <!-- Murokellari Map -->
+            <div id="murokellari-view" class="hidden flex-1 overflow-y-auto px-4 pb-24">
+                <div class="w-full space-y-4">
+                    <div class="rounded-2xl border border-gray-700/60 bg-[rgba(17,12,28,0.85)] p-4 text-sm text-gray-300 shadow-lg">
+                        <h2 class="text-lg font-semibold text-white mb-1">murokellari map</h2>
+                        <p class="text-gray-400">drag the party to the right spot on the map. their locations update for everyone instantly.</p>
+                    </div>
+                    <div id="murokellari-map-container" class="relative mx-auto w-full">
+                        <img id="murokellari-map-image" src="murokellari-map.svg" alt="Murokellari map" class="w-full h-full object-cover">
+                        <div class="murokellari-map-overlay"></div>
+                        <div id="murokellari-markers-layer"></div>
+                    </div>
+                </div>
+            </div>
+
             <!-- New Post Button -->
-            <div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md md:max-w-2xl p-4 z-20 pointer-events-none">
+            <div id="new-post-button-container" class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md md:max-w-2xl p-4 z-20 pointer-events-none">
                  <button id="new-post-btn" class="w-full text-white font-bold py-4 px-4 rounded-full shadow-lg transition-all transform hover:scale-105 pointer-events-auto" style="background-color: #7F3BC3;">
                     new yap
                 </button>
@@ -289,6 +416,15 @@
         let replyingToPostAuthor = null;
         let postsCache = [];
         let initialLoadComplete = false;
+        let activeTab = 'feed';
+
+        let murokellariInitialized = false;
+        let murokellariPositions = {};
+        let murokellariMarkerElements = {};
+        let murokellariUnsubscribe = null;
+        let murokellariDocRef = null;
+        let murokellariActiveMarkerId = null;
+        let murokellariActivePointerId = null;
 
         // --- UI Elements ---
         const loginScreen = document.getElementById('login-screen');
@@ -307,6 +443,12 @@
         const discardPostBtn = document.getElementById('discard-post-btn');
         const sendPostBtn = document.getElementById('send-post-btn');
         const logoutButton = document.getElementById('logout-button');
+        const feedTabButton = document.getElementById('feed-tab-button');
+        const murokellariTabButton = document.getElementById('murokellari-tab-button');
+        const murokellariView = document.getElementById('murokellari-view');
+        const murokellariMapContainer = document.getElementById('murokellari-map-container');
+        const murokellariMarkersLayer = document.getElementById('murokellari-markers-layer');
+        const newPostButtonContainer = document.getElementById('new-post-button-container');
         
         const characterSelectionContainer = document.getElementById('character-selection-container');
         const adminCharacterSelectionContainer = document.getElementById('admin-character-selection-container');
@@ -514,6 +656,182 @@
             }
         };
 
+        const setActiveTab = (tab) => {
+            activeTab = tab;
+            if (tab === 'feed') {
+                feedContainer.classList.remove('hidden');
+                murokellariView.classList.add('hidden');
+                feedTabButton.classList.add('tab-active');
+                murokellariTabButton.classList.remove('tab-active');
+                newPostButtonContainer.classList.remove('hidden');
+            } else {
+                feedContainer.classList.add('hidden');
+                murokellariView.classList.remove('hidden');
+                feedTabButton.classList.remove('tab-active');
+                murokellariTabButton.classList.add('tab-active');
+                newPostButtonContainer.classList.add('hidden');
+            }
+        };
+
+        const computeDefaultMurokellariPosition = (index, total) => {
+            if (total === 0) {
+                return { x: 50, y: 50 };
+            }
+            const columns = Math.ceil(Math.sqrt(total));
+            const rows = Math.ceil(total / columns);
+            const column = index % columns;
+            const row = Math.floor(index / columns);
+            const x = ((column + 0.5) / columns) * 100;
+            const y = ((row + 0.5) / rows) * 100;
+            return { x, y };
+        };
+
+        const positionMurokellariMarker = (marker, x, y) => {
+            marker.style.left = `${x}%`;
+            marker.style.top = `${y}%`;
+        };
+
+        const applyMurokellariPositions = (positions = {}) => {
+            const entries = Object.entries(allCharacters);
+            const total = entries.length;
+            entries.forEach(([characterId], index) => {
+                const marker = murokellariMarkerElements[characterId];
+                if (!marker) return;
+                const saved = positions[characterId];
+                let x = typeof saved?.x === 'number' ? saved.x : null;
+                let y = typeof saved?.y === 'number' ? saved.y : null;
+                if (x === null || y === null) {
+                    const defaults = computeDefaultMurokellariPosition(index, total);
+                    x = defaults.x;
+                    y = defaults.y;
+                }
+                murokellariPositions[characterId] = { x, y };
+                positionMurokellariMarker(marker, x, y);
+            });
+        };
+
+        const resetMurokellari = () => {
+            if (murokellariUnsubscribe) {
+                murokellariUnsubscribe();
+                murokellariUnsubscribe = null;
+            }
+            murokellariInitialized = false;
+            murokellariPositions = {};
+            murokellariMarkerElements = {};
+            murokellariActiveMarkerId = null;
+            murokellariActivePointerId = null;
+            if (murokellariMarkersLayer) {
+                murokellariMarkersLayer.innerHTML = '';
+            }
+        };
+
+        const handleMurokellariPointerMove = (event) => {
+            if (!murokellariActiveMarkerId || murokellariActivePointerId !== event.pointerId) {
+                return;
+            }
+            const marker = murokellariMarkerElements[murokellariActiveMarkerId];
+            if (!marker || !murokellariMapContainer) return;
+            const rect = murokellariMapContainer.getBoundingClientRect();
+            if (rect.width === 0 || rect.height === 0) return;
+            let x = ((event.clientX - rect.left) / rect.width) * 100;
+            let y = ((event.clientY - rect.top) / rect.height) * 100;
+            x = Math.min(98, Math.max(2, x));
+            y = Math.min(98, Math.max(2, y));
+            murokellariPositions[murokellariActiveMarkerId] = { x, y };
+            positionMurokellariMarker(marker, x, y);
+        };
+
+        const persistMurokellariPosition = async (characterId) => {
+            if (!murokellariDocRef || !murokellariPositions[characterId]) return;
+            const { x, y } = murokellariPositions[characterId];
+            try {
+                await setDoc(murokellariDocRef, {
+                    [`positions.${characterId}`]: {
+                        x: Number(x.toFixed(4)),
+                        y: Number(y.toFixed(4)),
+                        updatedAt: serverTimestamp(),
+                        updatedBy: currentUser ? currentUser.name : null,
+                    }
+                }, { merge: true });
+            } catch (error) {
+                console.error('failed to update murokellari position', error);
+            }
+        };
+
+        const createMurokellariMarker = (characterId, character) => {
+            const marker = document.createElement('div');
+            marker.className = 'murokellari-marker';
+            marker.dataset.id = characterId;
+
+            const avatar = document.createElement('div');
+            avatar.className = 'murokellari-marker-avatar';
+            const img = document.createElement('img');
+            img.src = character.image;
+            img.alt = `${character.name} token`;
+            avatar.appendChild(img);
+
+            const label = document.createElement('span');
+            label.className = 'murokellari-marker-label';
+            label.style.color = character.color;
+            label.textContent = character.name;
+
+            marker.appendChild(avatar);
+            marker.appendChild(label);
+
+            marker.addEventListener('pointerdown', (event) => {
+                murokellariActiveMarkerId = characterId;
+                murokellariActivePointerId = event.pointerId;
+                marker.classList.add('dragging');
+                marker.setPointerCapture(event.pointerId);
+            });
+
+            marker.addEventListener('pointermove', (event) => {
+                handleMurokellariPointerMove(event);
+            });
+
+            const finishDrag = (event) => {
+                if (murokellariActiveMarkerId !== characterId || murokellariActivePointerId !== event.pointerId) {
+                    return;
+                }
+                marker.classList.remove('dragging');
+                marker.releasePointerCapture(event.pointerId);
+                persistMurokellariPosition(characterId);
+                murokellariActiveMarkerId = null;
+                murokellariActivePointerId = null;
+            };
+
+            marker.addEventListener('pointerup', finishDrag);
+            marker.addEventListener('pointercancel', finishDrag);
+
+            return marker;
+        };
+
+        const ensureMurokellariMarkers = () => {
+            if (!murokellariMarkersLayer) return;
+            if (Object.keys(murokellariMarkerElements).length > 0) return;
+            const fragment = document.createDocumentFragment();
+            Object.entries(allCharacters).forEach(([characterId, character]) => {
+                const marker = createMurokellariMarker(characterId, character);
+                murokellariMarkerElements[characterId] = marker;
+                fragment.appendChild(marker);
+            });
+            murokellariMarkersLayer.appendChild(fragment);
+        };
+
+        const initializeMurokellari = () => {
+            if (murokellariInitialized || !db || !murokellariDocRef) return;
+            ensureMurokellariMarkers();
+            murokellariInitialized = true;
+            murokellariUnsubscribe = onSnapshot(murokellariDocRef, (docSnap) => {
+                const data = docSnap.exists() ? docSnap.data() : {};
+                applyMurokellariPositions(data.positions || {});
+            }, (error) => {
+                console.error('murokellari listener error', error);
+            });
+        };
+
+        setActiveTab('feed');
+
         const setupUIForUser = (userProfile) => {
             currentUser = userProfile;
             userName.textContent = userProfile.name;
@@ -521,6 +839,8 @@
             userAvatarImg.src = userProfile.image;
             statusInput.value = userProfile.status || '';
             showView('main-app-screen');
+            setActiveTab(activeTab === 'murokellari' ? 'murokellari' : 'feed');
+            initializeMurokellari();
         };
 
         const handleLogin = async () => {
@@ -582,7 +902,13 @@
 
         characterSelectionContainer.addEventListener('click', openCharacterPasswordPrompt);
         adminCharacterSelectionContainer.addEventListener('click', openCharacterPasswordPrompt);
-        
+
+        feedTabButton.addEventListener('click', () => setActiveTab('feed'));
+        murokellariTabButton.addEventListener('click', () => {
+            setActiveTab('murokellari');
+            initializeMurokellari();
+        });
+
         adminLoginButton.addEventListener('click', () => {
             adminPasswordInput.value = '';
             adminPasswordError.classList.add('hidden');
@@ -635,10 +961,12 @@
         logoutButton.addEventListener('click', async () => {
             if (!auth.currentUser) return;
             const userDocRef = doc(db, `artifacts/${appId}/users`, auth.currentUser.uid);
-            await setDoc(userDocRef, {deleted: true}); 
+            await setDoc(userDocRef, {deleted: true});
             currentUser = null;
             initialLoadComplete = false;
             postsCache = [];
+            resetMurokellari();
+            setActiveTab('feed');
             showView('login-screen');
         });
 
@@ -808,6 +1136,7 @@
 
             app = initializeApp(firebaseConfig);
             db = getFirestore(app);
+            murokellariDocRef = doc(db, 'artifacts', appId, 'public', 'murokellari');
             auth = getAuth(app);
 
             onAuthStateChanged(auth, async (user) => {
@@ -818,6 +1147,8 @@
                             setupUIForUser(userDoc.data());
                         } else {
                             currentUser = null;
+                            resetMurokellari();
+                            setActiveTab('feed');
                             showView('login-screen');
                         }
                     });
